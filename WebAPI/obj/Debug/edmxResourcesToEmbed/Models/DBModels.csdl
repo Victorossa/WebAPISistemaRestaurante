@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RestauranteDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Cliente">
+    <Key>
+      <PropertyRef Name="ClienteID" />
+    </Key>
+    <Property Name="ClienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Pedido" Relationship="Self.FK_Pedido_Cliente" FromRole="Cliente" ToRole="Pedido" />
+  </EntityType>
+  <EntityType Name="Item">
+    <Key>
+      <PropertyRef Name="ItemID" />
+    </Key>
+    <Property Name="ItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Precio" Type="Decimal" Precision="18" Scale="2" />
+    <NavigationProperty Name="PedidoItems" Relationship="Self.FK_PedidoItems_Item" FromRole="Item" ToRole="PedidoItems" />
+  </EntityType>
+  <EntityType Name="Pedido">
+    <Key>
+      <PropertyRef Name="PedidoID" />
+    </Key>
+    <Property Name="PedidoID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PedidoNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ClienteID" Type="Int32" />
+    <Property Name="PMethod" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="GTotal" Type="Decimal" Precision="18" Scale="2" />
+    <NavigationProperty Name="Cliente" Relationship="Self.FK_Pedido_Cliente" FromRole="Pedido" ToRole="Cliente" />
+    <NavigationProperty Name="PedidoItems" Relationship="Self.FK_PedidoItems_Pedido" FromRole="Pedido" ToRole="PedidoItems" />
+  </EntityType>
+  <EntityType Name="PedidoItems">
+    <Key>
+      <PropertyRef Name="PedidoItemID" />
+    </Key>
+    <Property Name="PedidoItemID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PedidoID" Type="Int64" />
+    <Property Name="ItemID" Type="Int32" />
+    <Property Name="Cantidad" Type="Int32" />
+    <NavigationProperty Name="Item" Relationship="Self.FK_PedidoItems_Item" FromRole="PedidoItems" ToRole="Item" />
+    <NavigationProperty Name="Pedido" Relationship="Self.FK_PedidoItems_Pedido" FromRole="PedidoItems" ToRole="Pedido" />
+  </EntityType>
+  <Association Name="FK_Pedido_Cliente">
+    <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cliente">
+        <PropertyRef Name="ClienteID" />
+      </Principal>
+      <Dependent Role="Pedido">
+        <PropertyRef Name="ClienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PedidoItems_Item">
+    <End Role="Item" Type="Self.Item" Multiplicity="0..1" />
+    <End Role="PedidoItems" Type="Self.PedidoItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="ItemID" />
+      </Principal>
+      <Dependent Role="PedidoItems">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PedidoItems_Pedido">
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="0..1" />
+    <End Role="PedidoItems" Type="Self.PedidoItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pedido">
+        <PropertyRef Name="PedidoID" />
+      </Principal>
+      <Dependent Role="PedidoItems">
+        <PropertyRef Name="PedidoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DBModel" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cliente" EntityType="Self.Cliente" />
+    <EntitySet Name="Item" EntityType="Self.Item" />
+    <EntitySet Name="Pedido" EntityType="Self.Pedido" />
+    <EntitySet Name="PedidoItems" EntityType="Self.PedidoItems" />
+    <AssociationSet Name="FK_Pedido_Cliente" Association="Self.FK_Pedido_Cliente">
+      <End Role="Cliente" EntitySet="Cliente" />
+      <End Role="Pedido" EntitySet="Pedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PedidoItems_Item" Association="Self.FK_PedidoItems_Item">
+      <End Role="Item" EntitySet="Item" />
+      <End Role="PedidoItems" EntitySet="PedidoItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PedidoItems_Pedido" Association="Self.FK_PedidoItems_Pedido">
+      <End Role="Pedido" EntitySet="Pedido" />
+      <End Role="PedidoItems" EntitySet="PedidoItems" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

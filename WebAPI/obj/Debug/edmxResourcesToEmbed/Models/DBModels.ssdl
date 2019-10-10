@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RestauranteDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Cliente">
+    <Key>
+      <PropertyRef Name="ClienteID" />
+    </Key>
+    <Property Name="ClienteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Item">
+    <Key>
+      <PropertyRef Name="ItemID" />
+    </Key>
+    <Property Name="ItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="50" />
+    <Property Name="Precio" Type="decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="Pedido">
+    <Key>
+      <PropertyRef Name="PedidoID" />
+    </Key>
+    <Property Name="PedidoID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PedidoNo" Type="varchar" MaxLength="50" />
+    <Property Name="ClienteID" Type="int" />
+    <Property Name="PMethod" Type="varchar" MaxLength="50" />
+    <Property Name="GTotal" Type="decimal" Precision="18" Scale="2" />
+  </EntityType>
+  <EntityType Name="PedidoItems">
+    <Key>
+      <PropertyRef Name="PedidoItemID" />
+    </Key>
+    <Property Name="PedidoItemID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PedidoID" Type="bigint" />
+    <Property Name="ItemID" Type="int" />
+    <Property Name="Cantidad" Type="int" />
+  </EntityType>
+  <Association Name="FK_Pedido_Cliente">
+    <End Role="Cliente" Type="Self.Cliente" Multiplicity="0..1" />
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cliente">
+        <PropertyRef Name="ClienteID" />
+      </Principal>
+      <Dependent Role="Pedido">
+        <PropertyRef Name="ClienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PedidoItems_Item">
+    <End Role="Item" Type="Self.Item" Multiplicity="0..1" />
+    <End Role="PedidoItems" Type="Self.PedidoItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="ItemID" />
+      </Principal>
+      <Dependent Role="PedidoItems">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PedidoItems_Pedido">
+    <End Role="Pedido" Type="Self.Pedido" Multiplicity="0..1" />
+    <End Role="PedidoItems" Type="Self.PedidoItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pedido">
+        <PropertyRef Name="PedidoID" />
+      </Principal>
+      <Dependent Role="PedidoItems">
+        <PropertyRef Name="PedidoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="RestauranteDBModelStoreContainer">
+    <EntitySet Name="Cliente" EntityType="Self.Cliente" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Pedido" EntityType="Self.Pedido" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PedidoItems" EntityType="Self.PedidoItems" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Pedido_Cliente" Association="Self.FK_Pedido_Cliente">
+      <End Role="Cliente" EntitySet="Cliente" />
+      <End Role="Pedido" EntitySet="Pedido" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PedidoItems_Item" Association="Self.FK_PedidoItems_Item">
+      <End Role="Item" EntitySet="Item" />
+      <End Role="PedidoItems" EntitySet="PedidoItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PedidoItems_Pedido" Association="Self.FK_PedidoItems_Pedido">
+      <End Role="Pedido" EntitySet="Pedido" />
+      <End Role="PedidoItems" EntitySet="PedidoItems" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

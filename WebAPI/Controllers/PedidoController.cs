@@ -17,9 +17,21 @@ namespace WebAPI.Controllers
         private DBModel db = new DBModel();
 
         // GET: api/Pedido
-        public IQueryable<Pedido> GetPedido()
+        public System.Object GetPedido()
         {
-            return db.Pedido;
+            var result = (from a in db.Pedido
+                          join b in db.Cliente on a.ClienteID equals b.ClienteID
+
+                          select new
+                          {
+                              a.PedidoID,
+                              a.PedidoNo,
+                              Cliente = b.Nombre,
+                              a.PMethod,
+                              a.GTotal
+                          }).ToList();
+
+            return result; 
         }
 
         // GET: api/Pedido/5
@@ -74,15 +86,14 @@ namespace WebAPI.Controllers
         [ResponseType(typeof(Pedido))]
         public IHttpActionResult PostPedido(Pedido pedido)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             db.Pedido.Add(pedido);
+            foreach (var item in pedido.PedidoItems)
+            {
+                db.PedidoItems.Add(item);
+            }
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = pedido.PedidoID }, pedido);
+            return Ok();
         }
 
         // DELETE: api/Pedido/5
